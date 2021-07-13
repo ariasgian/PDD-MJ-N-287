@@ -8,7 +8,19 @@ Created on Tue Jul 13 19:36:28 2021
 from flask import Flask, json
 from pymongo import MongoClient
 from urllib.parse import urlencode
+import settings
+from os import environ
+
+USER = eviron["DB_USER"]
+PASS = eviron["DB_PASS"]
+HOST = eviron["DB_HOST"]
+BASE = eviron["DB_NAME"]
+
 app = Flask(__name__)
+
+print("##### Inicio Variable de entorno ###")
+print(environ)
+print("##### Fin Variable de entorno ###")
 
 
 #######  MongoDB   ######
@@ -20,7 +32,7 @@ params = {
 }
 
 client = MongoClient(
-    "mongodb+srv://gian-python:eantpass2021@python-data-develop.6aicx.mongodb.net/PDD-MJ-N-287?"+urlencode(params))
+    "mongodb+srv://" + USER + ':' + PASS + '@' +HOST + '/' + BASE + "?+urlencode(params))
 db = client
 
 ##########
