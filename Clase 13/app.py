@@ -11,10 +11,11 @@ from urllib.parse import urlencode
 import settings
 from os import environ
 
-USER = eviron["DB_USER"]
-PASS = eviron["DB_PASS"]
-HOST = eviron["DB_HOST"]
-BASE = eviron["DB_NAME"]
+USER = environ["DB_USER"]
+PASS = environ["DB_PASS"]
+HOST = environ["DB_HOST"]
+BASE = environ["DB_NAME"]
+PORT = environ['port']
 
 app = Flask(__name__)
 
@@ -32,7 +33,7 @@ params = {
 }
 
 client = MongoClient(
-    "mongodb+srv://" + USER + ':' + PASS + '@' +HOST + '/' + BASE + "?+urlencode(params))
+    "mongodb+srv://" + USER + ':' + PASS + '@' +HOST + '/' + BASE + '?'+urlencode(params))
 db = client
 
 ##########
@@ -92,4 +93,4 @@ def test():
     return "mira la consola...."
 
 
-app.run(port=3030, host='0.0.0.0')
+app.run(port=PORT, host='0.0.0.0')
