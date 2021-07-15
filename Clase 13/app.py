@@ -15,7 +15,7 @@ USER = environ["DB_USER"]
 PASS = environ["DB_PASS"]
 HOST = environ["DB_HOST"]
 BASE = environ["DB_NAME"]
-PORT = environ['port']
+PORT = environ["PORT"]
 
 app = Flask(__name__)
 
