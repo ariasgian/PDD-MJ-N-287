@@ -59,27 +59,37 @@ def twitterUsers():
 
 
 @app.route('/users/<path>')
-def searchUser(path):
+def searchUsers(path):
+    
+    '''
+    if path == "people":
+        return "ACA VA UN JSON DE PERSONAS"
+    elif path == "company":
+        return "ACA VA UN JSON DE EMPRESAS"
+    else:
+        return "UPPS... NO PUEDO BUSCAR LO QUE ESTAS PIDIENDO :("
+    '''
+    
+    if path not in ["people", "company", "all"]:
+        return "UPPS... NO PUEDO BUSCAR LO QUE ESTAS PIDIENDO :("
+    
     data = db["PDD-MJ-N-287"]
     test = data["twitter"]
-    users = test.find({'type': path}).limit(10)
+    
+    if path == "all":
+        users = test.find({}).limit(10)
+    else:
+        users = test.find({ "type" : path }).limit(10)
+    
     result = []
 
     for user in users:
         item = {
-            'usuario': user['name']
+            'usuario' : user['name']
         }
         result.append(item)
-    response = app.response_class(response=json.dumps(
-        result), status=200, mimetype='application/json')
-    return response
 
-    """if path == 'people':
-        return 'usted va un JSON de personas'
-    elif path == 'company':
-        return 'aca va un JSON de empresas'
-    else:
-        return 'UPSSS.... no puedo buscar lo que estas pidiendo :('"""
+    return app.response_class(response = json.dumps(result), status = 200, mimetype = "application/json" )
 
 
 @app.route('/test')
@@ -92,5 +102,27 @@ def test():
         print(user['name'], user['type'])
     return "mira la consola...."
 
+@app.route("/tweets/<user>/<limit>")
+def filterUsers(user, limit):
+    data = db["PDD-MJ-N-287"]
+    twitter = data["twitter"]
+    if limit != None and limit.isnumeric():
+        limit = int(limit)
+    else:
+        response = {
+            "ok" : False,
+            "msg" : "ERROR: No puede realizarse la busqueda :("
+        }
+        return app.response_class(response = json.dumps(response), status = 404, mimetype = "application/json")       
+    tweets = twitter.find({ "in_reply_to_screen_name" : user }).limit(limit)
+    response = []  
+    for tweet in tweets:
+        item = {
+            "id" : tweet['id_str'],
+            "user" : tweet['in_reply_to_screen_name'],
+            "tweet" : tweet['full_text']
+        }
+        response.append(item)
+    return app.response_class(response = json.dumps(response), status = 200, mimetype = "application/json")
 
 app.run(port=PORT, host='0.0.0.0')
