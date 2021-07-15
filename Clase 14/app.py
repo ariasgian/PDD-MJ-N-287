@@ -5,7 +5,7 @@ Created on Tue Jul 13 19:36:28 2021
 
 @author: gian
 """
-from flask import Flask, json
+from flask import Flask, json, request
 from pymongo import MongoClient
 from urllib.parse import urlencode
 import settings
@@ -125,4 +125,39 @@ def filterUsers(user, limit):
         response.append(item)
     return app.response_class(response = json.dumps(response), status = 200, mimetype = "application/json")
 
-app.run(port=PORT, host='0.0.0.0')
+@app.route("/tweets", methods = ["POST"])
+def postearTweets():
+
+    data = db["PDD-MJ-N-287"]
+    twitter = data["twitter"]
+    
+    el_tweet = {
+        "id_str" : request.form["id"],
+        "in_reply_to_screen_name" : request.form["user"],
+        "full_text" : request.form["tweet"]
+    }
+    
+    result = twitter.insert_one( el_tweet )
+
+    '''   
+    if result.acknowledged == True:
+        
+        response = {
+            "ok" : True,
+            "msg" : "Tweet guardado correctamente :D"
+        }
+    
+    else:
+        response = {
+            "ok" : False,
+            "msg" : "Error al guardar el Tweet :C"
+        }
+    '''
+    
+    # variable = valor_verdaro CONDICION valor_falso
+    
+    response = { "ok" : True, "msg" : "Tweet guardado correctamente :D" } if result.acknowledged == True else { "ok" : False, "msg" : "Error al guardar el Tweet :C" }
+    
+    # response = result.acknowledged == true ? { ok : true } : { ok : false } 
+    return app.response_class(response = json.dumps(response), status = 200, mimetype = "application/json")
+app.run( port = PORT, host = '0.0.0.0' )
