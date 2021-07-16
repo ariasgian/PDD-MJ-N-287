@@ -20,9 +20,9 @@ FLASK_ENV = environ["FLASK_ENV"]
 
 app = Flask(__name__)
 
-print("##### Inicio Variable de entorno ###")
-print(environ)
-print("##### Fin Variable de entorno ###")
+# print("##### Inicio Variable de entorno ###")
+# print(environ)
+# print("##### Fin Variable de entorno ###")
 
 
 #######  MongoDB   ######
@@ -164,6 +164,6 @@ def postearTweets():
 
 if __name__== "__main__":
     if FLASK_ENV == "development":
-        app.run( port = PORT, host='0,0,0,0' )
+        app.run( port = PORT, host='0.0.0.0' )
     else:
         app.run( port= PORT)
