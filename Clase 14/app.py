@@ -16,6 +16,7 @@ PASS = environ["DB_PASS"]
 HOST = environ["DB_HOST"]
 BASE = environ["DB_NAME"]
 PORT = environ["PORT"]
+FLASK_ENV = environ["FLASK_ENV"]
 
 app = Flask(__name__)
 
@@ -160,4 +161,9 @@ def postearTweets():
     
     # response = result.acknowledged == true ? { ok : true } : { ok : false } 
     return app.response_class(response = json.dumps(response), status = 200, mimetype = "application/json")
-app.run( port = 80, host = '0.0.0.0' )
+
+if __name__== "__main__":
+    if FLASK_ENV == "development":
+        app.run( port = PORT, host='0,0,0,0' )
+    else:
+        app.run( port= PORT)
